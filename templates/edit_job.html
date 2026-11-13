@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Application | JobTrack Pro</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">JT</span>
+            <span>JobTrack <strong>Pro</strong></span>
+        </div>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('add_job') }}" class="nav-link">
+                <span>＋</span> Add Application
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="online-dot"></span>
+            Application Tracker
+            <small>Portfolio Project · v1.0</small>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">JOB MANAGEMENT</span>
+                <h1>Edit Application</h1>
+                <p>Update your job application information.</p>
+            </div>
+
+            <a href="{{ url_for('home') }}"
+               class="clear-btn">
+                ← Back to Dashboard
+            </a>
+        </header>
+
+        <section class="application-form-panel">
+
+            <div class="form-heading">
+                <div class="form-heading-icon">✎</div>
+
+                <div>
+                    <h2>Update Application Details</h2>
+                    <p>Make changes to your saved job application.</p>
+                </div>
+            </div>
+
+            <form method="POST"
+                  action="{{ url_for('edit_job', job_id=job['id']) }}"
+                  class="professional-form">
+
+                <!-- Basic Details -->
+                <div class="form-grid">
+
+                    <!-- Company -->
+                    <div class="form-field">
+                        <label for="company">Company Name *</label>
+
+                        <input
+                            type="text"
+                            id="company"
+                            name="company"
+                            value="{{ job['company'] }}"
+                            placeholder="Company name"
+                            maxlength="100"
+                            required>
+
+                        <small>Update the company name.</small>
+                    </div>
+
+                    <!-- Job Position -->
+                    <div class="form-field">
+                        <label for="title">Job Position *</label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value="{{ job['title'] }}"
+                            placeholder="Job position"
+                            maxlength="150"
+                            required>
+
+                        <small>Update the job title.</small>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-field form-field-full">
+                        <label for="status">Application Status *</label>
+
+                        <select id="status"
+                                name="status"
+                                required>
+
+                            {% for status in ["Applied", "Interview", "Offer", "Rejected"] %}
+                            <option value="{{ status }}"
+                                {% if job['status'] == status %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                            {% endfor %}
+
+                        </select>
+
+                        <small>
+                            Select the current stage of this application.
+                        </small>
+                    </div>
+
+                </div>
+
+                <!-- Additional Details Heading -->
+                <div class="extra-details">
+                    <h3>Additional Job Details</h3>
+                    <p>Review and update this opportunity.</p>
+                </div>
+
+                <!-- Additional Details Fields -->
+                <div class="form-grid">
+
+                    <!-- Job Location -->
+                    <div class="form-field">
+                        <label for="location">Job Location</label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            value="{{ job['location'] or '' }}"
+                            placeholder="e.g. Remote, Lahore">
+                    </div>
+
+                    <!-- Expected Salary -->
+                    <div class="form-field">
+                        <label for="salary">Expected Salary</label>
+
+                        <input
+                            type="text"
+                            id="salary"
+                            name="salary"
+                            value="{{ job['salary'] or '' }}"
+                            placeholder="e.g. PKR 120,000">
+                    </div>
+
+                    <!-- Application Date -->
+                    <div class="form-field">
+                        <label for="application_date">
+                            Application Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="application_date"
+                            name="application_date"
+                            value="{{ job['application_date'] or '' }}">
+                    </div>
+
+                    <!-- Follow-up Date -->
+                    <div class="form-field">
+                        <label for="follow_up_date">
+                            Follow-up Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="follow_up_date"
+                            name="follow_up_date"
+                            value="{{ job['follow_up_date'] or '' }}">
+
+                        <small>
+                            Select a date to follow up with the company.
+                        </small>
+                    </div>
+
+                    <!-- Job Posting URL -->
+                    <div class="form-field form-field-full">
+                        <label for="job_url">Job Posting URL</label>
+
+                        <input
+                            type="url"
+                            id="job_url"
+                            name="job_url"
+                            value="{{ job['job_url'] or '' }}"
+                            placeholder="https://example.com/jobs">
+                    </div>
+
+                    <!-- Application Notes -->
+                    <div class="form-field form-field-full">
+                        <label for="notes">Application Notes</label>
+
+                        <textarea
+                            id="notes"
+                            name="notes"
+                            rows="4"
+                            maxlength="2000"
+                            placeholder="Add interview or follow-up notes...">{{ job['notes'] or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+
+                    <a href="{{ url_for('home') }}"
+                       class="cancel-btn">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="primary-btn">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <footer class="dashboard-footer">
+            JobTrack Pro · Job Application Management System
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

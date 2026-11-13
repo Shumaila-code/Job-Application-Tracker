@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Application | JobTrack Pro</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">JT</span>
+            <span>JobTrack <strong>Pro</strong></span>
+        </div>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('add_job') }}"
+               class="nav-link active">
+                <span>＋</span> Add Application
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="online-dot"></span>
+            Application Tracker
+            <small>Portfolio Project · v1.0</small>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">JOB MANAGEMENT</span>
+                <h1>Add New Application</h1>
+                <p>Keep track of your next career opportunity.</p>
+            </div>
+
+            <a href="{{ url_for('home') }}"
+               class="clear-btn">← Back to Dashboard</a>
+        </header>
+
+        <section class="application-form-panel">
+
+            <div class="form-heading">
+                <div class="form-heading-icon">＋</div>
+                <div>
+                    <h2>Application Details</h2>
+                    <p>Enter the information about your job application.</p>
+                </div>
+            </div>
+
+            <form action="{{ url_for('add_job') }}"
+                  method="POST"
+                  class="professional-form">
+
+                <div class="form-grid">
+
+                    <div class="form-field">
+                        <label for="company">Company Name *</label>
+                        <input
+                            type="text"
+                            id="company"
+                            name="company"
+                            placeholder="e.g. Google"
+                            maxlength="100"
+                            required>
+                        <small>Company you applied to</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="title">Job Position *</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="e.g. Junior Python Developer"
+                            maxlength="150"
+                            required>
+                        <small>Position or role title</small>
+                    </div>
+
+                    <div class="form-field form-field-full">
+                        <label for="status">Application Status *</label>
+
+                        <select id="status"
+                                name="status"
+                                required>
+                            <option value="Applied">Applied</option>
+                            <option value="Interview">Interview</option>
+                            <option value="Offer">Offer</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+
+                        <small>You can update the status later.</small>
+                    </div>
+
+                </div>
+                
+<!-- Additional Job Details -->
+<div class="extra-details">
+    <h3>Additional Job Details</h3>
+    <p>Keep important information about this opportunity.</p>
+</div>
+
+<div class="form-grid">
+
+    <div class="form-field">
+        <label for="location">Job Location</label>
+        <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="e.g. Remote, Lahore"
+            maxlength="150">
+    </div>
+
+    <div class="form-field">
+        <label for="salary">Expected Salary</label>
+        <input
+            type="text"
+            id="salary"
+            name="salary"
+            placeholder="e.g. PKR 100,000"
+            maxlength="100">
+    </div>
+
+    <div class="form-field">
+        <label for="application_date">Application Date</label>
+        <input
+            type="date"
+            id="application_date"
+            name="application_date">
+    </div>
+
+    <div class="form-field">
+        <label for="job_url">Job Posting URL</label>
+        <input
+            type="url"
+            id="job_url"
+            name="job_url"
+            placeholder="https://example.com/jobs">
+    </div>
+
+    <div class="form-field form-field-full">
+        <label for="notes">Application Notes</label>
+        <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            maxlength="2000"
+            placeholder="Interview details, recruiter contact, follow-up notes..."></textarea>
+    </div>
+
+</div>
+
+                <div class="form-actions">
+                    <a href="{{ url_for('home') }}"
+                       class="cancel-btn">Cancel</a>
+
+                    <button type="submit"
+                            class="primary-btn">
+                        + Save Application
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <footer class="dashboard-footer">
+            JobTrack Pro · Job Application Management System
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>

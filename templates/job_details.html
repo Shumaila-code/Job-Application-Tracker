@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details | JobTrack Pro</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">JT</span>
+            <span>JobTrack <strong>Pro</strong></span>
+        </div>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('add_job') }}" class="nav-link">
+                <span>＋</span> Add Application
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="online-dot"></span>
+            Application Tracker
+            <small>Portfolio Project · v1.0</small>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">APPLICATION OVERVIEW</span>
+                <h1>Job Details</h1>
+                <p>View your saved application information.</p>
+            </div>
+
+            <a href="{{ url_for('home') }}"
+               class="clear-btn">
+                ← Back to Dashboard
+            </a>
+        </header>
+
+        <section class="application-form-panel">
+
+            <!-- Company Heading -->
+            <div class="form-heading">
+                <div class="form-heading-icon">
+                    {{ job['company'][0]|upper }}
+                </div>
+
+                <div>
+                    <h2>{{ job['company'] }}</h2>
+                    <p>{{ job['title'] }}</p>
+                </div>
+            </div>
+
+            <!-- APPLICATION PROGRESS TIMELINE -->
+            <div class="progress-section">
+
+                <div class="progress-heading">
+                    <h3>Application Progress</h3>
+                    <p>
+                        Track the current stage of your application.
+                    </p>
+                </div>
+
+                {% set current_status = job['status'] %}
+
+                <div class="progress-timeline">
+
+                    <!-- Applied -->
+                    <div class="progress-step completed">
+                        <div class="progress-circle">✓</div>
+                        <span>Applied</span>
+                    </div>
+
+                    <div class="progress-line
+                        {% if current_status in ['Interview', 'Offer'] %}
+                            active
+                        {% endif %}">
+                    </div>
+
+                    <!-- Interview -->
+                    <div class="progress-step
+                        {% if current_status in ['Interview', 'Offer'] %}
+                            completed
+                        {% endif %}">
+
+                        <div class="progress-circle">
+                            {% if current_status in ['Interview', 'Offer'] %}
+                                ✓
+                            {% else %}
+                                2
+                            {% endif %}
+                        </div>
+
+                        <span>Interview</span>
+                    </div>
+
+                    <div class="progress-line
+                        {% if current_status == 'Offer' %}
+                            active
+                        {% endif %}">
+                    </div>
+
+                    <!-- Offer -->
+                    <div class="progress-step
+                        {% if current_status == 'Offer' %}
+                            completed
+                        {% endif %}">
+
+                        <div class="progress-circle">
+                            {% if current_status == 'Offer' %}
+                                ✓
+                            {% else %}
+                                3
+                            {% endif %}
+                        </div>
+
+                        <span>Offer</span>
+                    </div>
+
+                </div>
+
+                {% if current_status == 'Rejected' %}
+                    <p class="progress-rejected">
+                        This application was rejected.
+                    </p>
+                {% endif %}
+
+            </div>
+
+            <!-- JOB DETAILS -->
+            <div class="details-grid">
+
+                <!-- Application Status -->
+                <div class="detail-item">
+                    <span>Application Status</span>
+                    <strong>{{ job['status'] }}</strong>
+                </div>
+
+                <!-- Job Location -->
+                <div class="detail-item">
+                    <span>Job Location</span>
+                    <strong>
+                        {{ job['location'] or 'Not provided' }}
+                    </strong>
+                </div>
+
+                <!-- Expected Salary -->
+                <div class="detail-item">
+                    <span>Expected Salary</span>
+                    <strong>
+                        {{ job['salary'] or 'Not provided' }}
+                    </strong>
+                </div>
+
+                <!-- Application Date -->
+                <div class="detail-item">
+                    <span>Application Date</span>
+                    <strong>
+                        {{ job['application_date'] or 'Not provided' }}
+                    </strong>
+                </div>
+
+                <!-- Follow-up Date -->
+                <div class="detail-item">
+                    <span>Follow-up Date</span>
+                    <strong>
+                        {{ job['follow_up_date'] or 'Not scheduled' }}
+                    </strong>
+                </div>
+
+                <!-- Job Posting URL -->
+                <div class="detail-item detail-full">
+                    <span>Job Posting URL</span>
+
+                    {% if job['job_url'] %}
+                        <a href="{{ job['job_url'] }}"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            View Original Job Posting
+                        </a>
+                    {% else %}
+                        <strong>Not provided</strong>
+                    {% endif %}
+                </div>
+
+                <!-- Application Notes -->
+                <div class="detail-item detail-full">
+                    <span>Application Notes</span>
+
+                    <p class="detail-notes">
+                        {{ job['notes'] or 'No notes added.' }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+
+                <a href="{{ url_for('home') }}"
+                   class="cancel-btn">
+                    Back
+                </a>
+
+                <a href="{{ url_for('edit_job', job_id=job['id']) }}"
+                   class="primary-btn">
+                    Edit Application
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            JobTrack Pro · Job Application Management System
+        </footer>
+
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | JobTrack Pro</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">JT</span>
+            <span>JobTrack <strong>Pro</strong></span>
+        </div>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('home') }}"
+               class="nav-link active">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('add_job') }}"
+               class="nav-link">
+                <span>＋</span> Add Application
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="online-dot"></span>
+            Application Tracker
+            <small>Portfolio Project · v1.0</small>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">YOUR WORKSPACE</span>
+                <h1>Dashboard</h1>
+                <p>Track applications and monitor your progress.</p>
+            </div>
+
+            <a href="{{ url_for('add_job') }}"
+               class="primary-btn">
+                + Add New Job
+            </a>
+        </header>
+
+        <!-- Dashboard Statistics -->
+        <section class="stats-container">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Total Applications</span>
+                    <span class="stat-icon blue">▤</span>
+                </div>
+                <p class="stat-number">{{ total_jobs }}</p>
+                <small>All applications</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Interviews</span>
+                    <span class="stat-icon purple">◷</span>
+                </div>
+                <p class="stat-number">{{ interviews }}</p>
+                <small>Interview stage</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Offers</span>
+                    <span class="stat-icon green">★</span>
+                </div>
+                <p class="stat-number">{{ offers }}</p>
+                <small>Offers received</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Rejected</span>
+                    <span class="stat-icon red">×</span>
+                </div>
+                <p class="stat-number">{{ rejected }}</p>
+                <small>Closed applications</small>
+            </div>
+
+        </section>
+
+        <!-- FOLLOW-UP REMINDER CARDS -->
+        <section class="stats-container">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Due Today</span>
+                    <span class="stat-icon blue">◷</span>
+                </div>
+                <p class="stat-number">{{ due_today }}</p>
+                <small>Follow-ups scheduled for today</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Overdue</span>
+                    <span class="stat-icon red">!</span>
+                </div>
+                <p class="stat-number">{{ overdue }}</p>
+                <small>Follow-ups needing attention</small>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Upcoming</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+                <p class="stat-number">{{ upcoming }}</p>
+                <small>Future follow-ups</small>
+            </div>
+
+        </section>
+        
+        <!-- FOLLOW-UP ALERTS -->
+        <section class="applications-panel">
+
+             <div class="section-heading">
+                 <div>
+                     <h2>Follow-up Alerts</h2>
+                     <p>Applications requiring your attention</p>
+                 </div>
+             </div>
+
+         {% if follow_up_alerts %}
+        <div class="table-wrapper">
+             <table class="jobs-table">
+                 <thead>
+                     <tr>
+                         <th>Company</th>
+                         <th>Position</th>
+                         <th>Follow-up Date</th>
+                         <th>Action</th>
+                     </tr>
+                    </thead>
+
+                 <tbody>
+                     {% for job in follow_up_alerts %}
+                      <tr>
+                         <td>{{ job['company'] }}</td>
+                         <td>{{ job['title'] }}</td>
+                         
+                         <td>
+                             {{ job['follow_up_date'] }}
+
+                             {% if job['follow_up_date'] < today %}
+                                <span class="reminder-badge overdue-badge">
+                                     Overdue
+                                 </span>
+                             {% elif job['follow_up_date'] == today %}
+                                 <span class="reminder-badge today-badge">
+                                     Due Today
+                                 </span>
+                             {% endif %}
+                         </td>
+
+                         <td>
+                             <a class="edit-btn"
+                                 href="{{ url_for('job_details', job_id=job['id']) }}">
+                                 View
+                             </a>
+                         </td>
+                     </tr>
+                     {% endfor %}
+                 </tbody>
+             </table>
+         </div>
+
+         {% else %}
+         <p>No follow-ups due today or overdue. You're all caught up!</p>
+         {% endif %}
+
+        </section>
+
+        <!-- Job Applications -->
+        <section class="applications-panel">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Job Applications</h2>
+                    <p>Manage and organize your opportunities</p>
+                </div>
+
+                <span class="record-count">
+                    {{ jobs|length }} shown
+                </span>
+            </div>
+
+            <!-- Search and Filter -->
+            <form action="{{ url_for('home') }}"
+                  method="GET"
+                  class="filter-form">
+
+                <input
+                    type="search"
+                    name="search"
+                    placeholder="Search by company..."
+                    value="{{ search }}">
+
+                <select name="status">
+                    <option value="">All Statuses</option>
+
+                    {% for status in ["Applied", "Interview", "Offer", "Rejected"] %}
+                    <option value="{{ status }}"
+                        {% if selected_status == status %}selected{% endif %}>
+                        {{ status }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="primary-btn">
+                    Search
+                </button>
+
+                <a href="{{ url_for('home') }}"
+                   class="clear-btn">
+                    Clear
+                </a>
+            </form>
+
+            <!-- Jobs Table -->
+            {% if jobs %}
+
+            <div class="table-wrapper">
+                <table class="jobs-table">
+
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+
+                            <!-- Company -->
+                            <td>
+                                <div class="company-cell">
+                                    <span class="company-avatar">
+                                        {{ job["company"][0]|upper }}
+                                    </span>
+
+                                    <strong>
+                                        {{ job["company"] }}
+                                    </strong>
+                                </div>
+                            </td>
+
+                            <!-- Position -->
+                            <td>{{ job["title"] }}</td>
+
+                            <!-- Status -->
+                            <td>
+                                <span class="status-badge
+                                    {% if job['status'] == 'Interview' %}status-interview
+                                    {% elif job['status'] == 'Offer' %}status-offer
+                                    {% elif job['status'] == 'Rejected' %}status-rejected
+                                    {% else %}status-applied{% endif %}">
+                                    {{ job["status"] }}
+                                </span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td>
+                                <div class="action-buttons">
+
+                                    <!-- View -->
+                                    <a href="{{ url_for('job_details', job_id=job['id']) }}"
+                                       class="edit-btn">
+                                        View
+                                    </a>
+
+                                    <!-- Edit -->
+                                    <a href="{{ url_for('edit_job', job_id=job['id']) }}"
+                                       class="edit-btn">
+                                        Edit
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form
+                                        action="{{ url_for('delete_job', job_id=job['id']) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Delete this application?');">
+
+                                        <button type="submit"
+                                                class="delete-btn">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% else %}
+
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">▤</div>
+
+                <h3>No applications found</h3>
+
+                <p>
+                    Try another filter or add your first
+                    job application.
+                </p>
+
+                <a href="{{ url_for('add_job') }}"
+                   class="primary-btn">
+                    + Add Application
+                </a>
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            JobTrack Pro · Job Application Management System
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>
